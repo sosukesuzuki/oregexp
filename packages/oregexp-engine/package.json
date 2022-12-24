@@ -1,0 +1,22 @@
+{
+  "name": "@sosukesuzuki/oregexp-engine",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "dependencies": {
+    "@sosukesuzuki/oregexp-parser": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  },
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "compile": "tsc",
+    "test": "echo \"T.B.D.\""
+  },
+  "author": {
+    "name": "Sosuke Suzuki"
+  },
+  "license": "MIT"
+}

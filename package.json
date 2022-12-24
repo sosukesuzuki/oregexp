@@ -1,0 +1,37 @@
+{
+  "name": "oregexp",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "lint:prettier": "prettier . --check",
+    "lint:eslint": "eslint ./packages --ext .ts",
+    "fix:prettier": "npm run lint:prettier -- --write",
+    "fix:eslint": "npm run lint:eslint -- --fix",
+    "clean": "rimraf \"packages/**/lib\" \"packages/**/*.tsbuildinfo\"",
+    "compile": "tsc -b tsconfig.build.json",
+    "prepare": "npm run compile",
+    "test": "npm test --workspaces"
+  },
+  "author": {
+    "name": "Sosuke Suzuki"
+  },
+  "license": "MIT",
+  "volta": {
+    "node": "18.12.1",
+    "npm": "8.19.3"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-unicorn": "^45.0.2",
+    "prettier": "^2.8.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.4"
+  }
+}
