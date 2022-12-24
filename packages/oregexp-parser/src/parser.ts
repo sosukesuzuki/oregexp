@@ -34,41 +34,60 @@ class Tokenizer {
     this.setState(this.value[this.position]);
   }
 
+  private getNewState(value: string): TokenizerState {
+    if (value == null) {
+      return {
+        type: undefined,
+        value: undefined,
+      };
+    }
+    switch (value) {
+      case "*": {
+        return {
+          type: tokenTypes.star,
+          value: undefined,
+        };
+      }
+      case "\\": {
+        return {
+          type: tokenTypes.escape,
+          value: undefined,
+        };
+      }
+      case "|": {
+        return {
+          type: tokenTypes.select,
+          value: undefined,
+        };
+      }
+      case "(": {
+        this.state = {
+          type: tokenTypes.open,
+          value: undefined,
+        };
+        break;
+      }
+      case ")": {
+        return {
+          type: tokenTypes.close,
+          value: undefined,
+        };
+      }
+    }
+    if (/\W/.test(value)) {
+      throw new Error(`oregexp doesn't support "${value}".`);
+    }
+    return {
+      type: tokenTypes.char,
+      value,
+    };
+  }
+
   private setState(value?: string) {
     if (value == null) {
       return;
     }
-    switch (value) {
-      case "*": {
-        this.state.type = tokenTypes.star;
-        break;
-      }
-      case "\\": {
-        this.state.type = tokenTypes.escape;
-        break;
-      }
-      case "|": {
-        this.state.type = tokenTypes.select;
-        break;
-      }
-      case "(": {
-        this.state.type = tokenTypes.open;
-        break;
-      }
-      case ")": {
-        this.state.type = tokenTypes.close;
-        break;
-      }
-      default: {
-        if (/\W/.test(value)) {
-          throw new Error(`oregexp doesn't support "${value}".`);
-        }
-        this.state = {
-          type: tokenTypes.char,
-          value,
-        };
-      }
-    }
+    this.state = this.getNewState(value);
   }
 
   match(tokenType: keyof typeof tokenTypes): boolean {
@@ -78,6 +97,11 @@ class Tokenizer {
   next(): void {
     const nextValue = this.value[++this.position];
     this.setState(nextValue);
+  }
+
+  lookahead(): TokenizerState {
+    const newState = this.getNewState(this.value[this.position + 1]);
+    return newState;
   }
 }
 
@@ -118,7 +142,8 @@ export class Parser {
   parseConcatExpression(): Expression {
     const left = this.parseStarExpression();
     if (
-      this.tokenizer.match(tokenTypes.char) ||
+      (this.tokenizer.match(tokenTypes.char) &&
+        this.tokenizer.lookahead().type === "char") ||
       this.tokenizer.match(tokenTypes.open)
     ) {
       if (this.tokenizer.match(tokenTypes.open)) {

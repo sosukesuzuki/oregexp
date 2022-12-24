@@ -5,4 +5,4 @@ export function parse(value: string) {
   return parser.parse();
 }
 
-console.log(parse("f|f"));
+console.log(parse("fo"));
