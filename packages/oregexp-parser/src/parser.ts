@@ -27,7 +27,7 @@ export class Parser {
     const left = this.parseConcatExpression();
     if (this.tokenizer.match(tokenTypes.select)) {
       this.tokenizer.next();
-      const right = this.parseConcatExpression();
+      const right = this.parseSelectExpression();
       return selectExpr(left, right);
     }
     return left;
