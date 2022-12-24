@@ -58,6 +58,16 @@ describe("parser", () => {
         starExpr(concatExpr(literalExpr("c"), literalExpr("d")))
       ),
     ],
+    [
+      "a(b|c)*d",
+      concatExpr(
+        literalExpr("a"),
+        concatExpr(
+          starExpr(selectExpr(literalExpr("b"), literalExpr("c"))),
+          literalExpr("d")
+        )
+      ),
+    ],
   ] as const;
   testCases.map(([value, expected]) => {
     it(`regexp: ${value}`, () => {
