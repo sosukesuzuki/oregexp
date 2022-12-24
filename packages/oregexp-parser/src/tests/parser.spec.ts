@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { Parser } from "../parser.js";
-import { concatExpr, literalExpr } from "../ast.js";
+import { concatExpr, literalExpr, selectExpr } from "../ast.js";
 
 function parse(value: string) {
   const parser = new Parser(value);
@@ -12,6 +12,7 @@ describe("parser", () => {
   const testCases = [
     ["f", literalExpr("f")],
     ["fo", concatExpr(literalExpr("f"), literalExpr("o"))],
+    ["f|o", selectExpr(literalExpr("f"), literalExpr("o"))],
   ] as const;
   testCases.map(([value, expected]) => {
     it(`regexp: ${value}`, () => {
