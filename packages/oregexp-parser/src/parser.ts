@@ -95,11 +95,6 @@ class Tokenizer {
     const nextValue = this.value[++this.position];
     this.setState(nextValue);
   }
-
-  lookahead(): TokenizerState {
-    const newState = this.getNewState(this.value[this.position + 1]);
-    return newState;
-  }
 }
 
 /**
