@@ -41,7 +41,6 @@ export class Parser {
       if (this.tokenizer.match(tokenTypes.char)) {
         node = concatExpr(node, this.parseStarExpression());
       } else if (this.tokenizer.match(tokenTypes.open)) {
-        this.tokenizer.next();
         const right = this.parseConcatExpression();
         node = concatExpr(node, right);
       } else {
@@ -90,7 +89,6 @@ export class Parser {
       this.tokenizer.next();
       return literalExpr(value);
     }
-    console.error(JSON.stringify(this.tokenizer));
-    throw new Error("Something wrong.");
+    throw new Error("Something wrong");
   }
 }
