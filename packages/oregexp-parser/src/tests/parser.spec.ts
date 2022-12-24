@@ -22,6 +22,14 @@ describe("parser", () => {
     ],
     ["f*", starExpr(literalExpr("f"))],
     ["(a)", literalExpr("a")],
+    ["(a)*", starExpr(literalExpr("a"))],
+    [
+      "aaa",
+      concatExpr(
+        concatExpr(literalExpr("a"), literalExpr("a")),
+        literalExpr("a")
+      ),
+    ],
   ] as const;
   testCases.map(([value, expected]) => {
     it(`regexp: ${value}`, () => {

@@ -143,7 +143,7 @@ export class Parser {
   }
 
   parseStarExpression(): Expression {
-    const expr = this.parseEscapeExpression();
+    const expr = this.parseFactor();
     if (this.tokenizer.match(tokenTypes.star)) {
       this.tokenizer.next();
       return starExpr(expr);
