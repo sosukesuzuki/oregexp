@@ -35,7 +35,7 @@ class Tokenizer {
     this.setState(this.value[this.position]);
   }
 
-  private getNewState(value: string): TokenizerState {
+  private getNewState(value?: string): TokenizerState {
     if (value == null) {
       return {
         type: undefined,
@@ -85,9 +85,6 @@ class Tokenizer {
   }
 
   private setState(value?: string) {
-    if (value == null) {
-      return;
-    }
     this.state = this.getNewState(value);
   }
 
@@ -139,8 +136,7 @@ export class Parser {
   parseConcatExpression(): Expression {
     const left = this.parseStarExpression();
     if (
-      (this.tokenizer.match(tokenTypes.char) &&
-        this.tokenizer.lookahead().type === "char") ||
+      this.tokenizer.match(tokenTypes.char) ||
       this.tokenizer.match(tokenTypes.open)
     ) {
       if (this.tokenizer.match(tokenTypes.open)) {
