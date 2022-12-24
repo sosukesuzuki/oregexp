@@ -98,9 +98,10 @@ class Tokenizer {
 }
 
 /**
- * <select> = <concat> \| <concat> | <concat>
- * <concat> = <star><star> | <star>
- * <star>   = <escape>* | <escape>
+ * <expr>   = <select>
+ * <select> = <select> \| <concat> | <concat>
+ * <concat> = <concat><star> | <star>
+ * <star>   = <factor>* | <factor>
  * <factor> = (<select>) | <escape>
  * <escape> = \<literal> | <literal>
  * <literal> = \w
