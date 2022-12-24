@@ -13,6 +13,13 @@ describe("parser", () => {
     ["f", literalExpr("f")],
     ["fo", concatExpr(literalExpr("f"), literalExpr("o"))],
     ["f|o", selectExpr(literalExpr("f"), literalExpr("o"))],
+    [
+      "a|bc",
+      selectExpr(
+        literalExpr("a"),
+        concatExpr(literalExpr("b"), literalExpr("c"))
+      ),
+    ],
   ] as const;
   testCases.map(([value, expected]) => {
     it(`regexp: ${value}`, () => {
