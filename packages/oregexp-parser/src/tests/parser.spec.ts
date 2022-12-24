@@ -26,8 +26,8 @@ describe("parser", () => {
     [
       "aaa",
       concatExpr(
-        concatExpr(literalExpr("a"), literalExpr("a")),
-        literalExpr("a")
+        literalExpr("a"),
+        concatExpr(literalExpr("a"), literalExpr("a"))
       ),
     ],
   ] as const;

@@ -136,7 +136,7 @@ export class Parser {
       if (this.tokenizer.match(tokenTypes.open)) {
         this.tokenizer.next();
       }
-      const right = this.parseStarExpression();
+      const right = this.parseConcatExpression();
       return concatExpr(left, right);
     }
     return left;
@@ -162,10 +162,10 @@ export class Parser {
         throw new Error("Something wrong");
       }
     }
-    return this.parseEscapeExpression();
+    return this.parseEscapedLiteral();
   }
 
-  parseEscapeExpression(): Expression {
+  parseEscapedLiteral(): Expression {
     if (this.tokenizer.match(tokenTypes.escape)) {
       this.tokenizer.next();
       return this.parseLiteral();
