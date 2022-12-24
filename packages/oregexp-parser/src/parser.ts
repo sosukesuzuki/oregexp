@@ -62,11 +62,10 @@ class Tokenizer {
         };
       }
       case "(": {
-        this.state = {
+        return {
           type: tokenTypes.open,
           value: undefined,
         };
-        break;
       }
       case ")": {
         return {
