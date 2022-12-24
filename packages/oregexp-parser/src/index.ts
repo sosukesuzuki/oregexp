@@ -5,4 +5,4 @@ export function parse(value: string) {
   return parser.parse();
 }
 
-console.log(JSON.stringify(parse("abcd")));
+console.log(JSON.stringify(parse("(ab)(cd)")));

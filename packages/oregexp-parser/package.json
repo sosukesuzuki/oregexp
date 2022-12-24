@@ -18,8 +18,5 @@
   "author": {
     "name": "Sosuke Suzuki"
   },
-  "license": "MIT",
-  "dependencies": {
-    "@sosukesuzuki/oregexp-parser": "^0.1.0"
-  }
+  "license": "MIT"
 }
