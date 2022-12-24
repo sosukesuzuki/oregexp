@@ -24,28 +24,32 @@ export class Parser {
   }
 
   parseSelectExpression(): Expression {
-    const left = this.parseConcatExpression();
-    if (this.tokenizer.match(tokenTypes.select)) {
-      this.tokenizer.next();
-      const right = this.parseSelectExpression();
-      return selectExpr(left, right);
+    let node = this.parseConcatExpression();
+    for (;;) {
+      if (this.tokenizer.match(tokenTypes.select)) {
+        this.tokenizer.next();
+        node = selectExpr(node, this.parseConcatExpression());
+      } else {
+        return node;
+      }
     }
-    return left;
   }
 
   parseConcatExpression(): Expression {
-    const left = this.parseStarExpression();
-    if (
-      this.tokenizer.match(tokenTypes.char) ||
-      this.tokenizer.match(tokenTypes.open)
-    ) {
-      if (this.tokenizer.match(tokenTypes.open)) {
-        this.tokenizer.next();
+    let node = this.parseStarExpression();
+    for (;;) {
+      if (
+        this.tokenizer.match(tokenTypes.char) ||
+        this.tokenizer.match(tokenTypes.open)
+      ) {
+        if (this.tokenizer.match(tokenTypes.open)) {
+          this.tokenizer.next();
+        }
+        node = concatExpr(node, this.parseStarExpression());
+      } else {
+        return node;
       }
-      const right = this.parseConcatExpression();
-      return concatExpr(left, right);
     }
-    return left;
   }
 
   parseStarExpression(): Expression {

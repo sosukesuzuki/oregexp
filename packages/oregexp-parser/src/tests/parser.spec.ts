@@ -24,10 +24,17 @@ describe("parser", () => {
     ["(a)", literalExpr("a")],
     ["(a)*", starExpr(literalExpr("a"))],
     [
-      "aaa",
+      "abc",
       concatExpr(
-        literalExpr("a"),
-        concatExpr(literalExpr("a"), literalExpr("a"))
+        concatExpr(literalExpr("a"), literalExpr("b")),
+        literalExpr("c")
+      ),
+    ],
+    [
+      "a|b|c",
+      selectExpr(
+        selectExpr(literalExpr("a"), literalExpr("b")),
+        literalExpr("c")
       ),
     ],
   ] as const;
