@@ -38,14 +38,12 @@ export class Parser {
   parseConcatExpression(): Expression {
     let node = this.parseStarExpression();
     for (;;) {
-      if (
-        this.tokenizer.match(tokenTypes.char) ||
-        this.tokenizer.match(tokenTypes.open)
-      ) {
-        if (this.tokenizer.match(tokenTypes.open)) {
-          this.tokenizer.next();
-        }
+      if (this.tokenizer.match(tokenTypes.char)) {
         node = concatExpr(node, this.parseStarExpression());
+      } else if (this.tokenizer.match(tokenTypes.open)) {
+        this.tokenizer.next();
+        const right = this.parseConcatExpression();
+        node = concatExpr(node, right);
       } else {
         return node;
       }
