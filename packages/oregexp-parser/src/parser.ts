@@ -1,4 +1,5 @@
 import type { Expression, LiteralExpression } from "./ast.js";
+import { concatExpr, selectExpr, starExpr, literalExpr } from "./ast.js";
 
 const tokenTypes = {
   select: "select",
@@ -130,11 +131,7 @@ export class Parser {
     if (this.tokenizer.match(tokenTypes.select)) {
       this.tokenizer.next();
       const right = this.parseConcatExpression();
-      return {
-        type: "SelectExpression",
-        left,
-        right,
-      };
+      return selectExpr(left, right);
     }
     return left;
   }
@@ -150,11 +147,7 @@ export class Parser {
         this.tokenizer.next();
       }
       const right = this.parseStarExpression();
-      return {
-        type: "ConcatExpression",
-        left,
-        right,
-      };
+      return concatExpr(left, right);
     }
     return left;
   }
@@ -163,10 +156,7 @@ export class Parser {
     const expr = this.parseEscapeExpression();
     if (this.tokenizer.match(tokenTypes.star)) {
       this.tokenizer.next();
-      return {
-        type: "StarExpression",
-        expression: expr,
-      };
+      return starExpr(expr);
     }
     return expr;
   }
@@ -200,10 +190,7 @@ export class Parser {
     ) {
       const value = this.tokenizer.state.value;
       this.tokenizer.next();
-      return {
-        type: "LiteralExpression",
-        value,
-      };
+      return literalExpr(value);
     }
     console.error(JSON.stringify(this.tokenizer));
     throw new Error("Something wrong.");

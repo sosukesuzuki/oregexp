@@ -25,3 +25,39 @@ export type Expression =
   | SelectExpression
   | ConcatExpression
   | LiteralExpression;
+
+export function starExpr(expression: Expression): StarExpression {
+  return {
+    type: "StarExpression",
+    expression,
+  };
+}
+
+export function selectExpr(
+  left: Expression,
+  right: Expression
+): SelectExpression {
+  return {
+    type: "SelectExpression",
+    left,
+    right,
+  };
+}
+
+export function concatExpr(
+  left: Expression,
+  right: Expression
+): ConcatExpression {
+  return {
+    type: "ConcatExpression",
+    left,
+    right,
+  };
+}
+
+export function literalExpr(value: string): LiteralExpression {
+  return {
+    type: "LiteralExpression",
+    value,
+  };
+}
