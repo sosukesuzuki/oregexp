@@ -51,7 +51,7 @@ export class Nfa {
     this.currentStates = [initialState];
   }
 
-  read(char: string | typeof e) {
+  public read(char: string | typeof e) {
     if (process.env.NODE_ENV !== "production") {
       assert(char === e || /\w/.test(char));
     }
