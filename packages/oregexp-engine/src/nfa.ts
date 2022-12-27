@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 // 遷移関数
 
 // ε遷移を表す
-const e = Symbol("epsilon");
+export const e = Symbol("epsilon");
 
 type StateLabel = string;
 
