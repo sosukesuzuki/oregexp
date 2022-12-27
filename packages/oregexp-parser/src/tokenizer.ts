@@ -1,7 +1,6 @@
 export const tokenTypes = {
   select: "select",
   star: "star",
-  escape: "escape",
   open: "open",
   close: "close",
   char: "char",
@@ -43,12 +42,6 @@ export class Tokenizer {
       case "*": {
         return {
           type: tokenTypes.star,
-          value: undefined,
-        };
-      }
-      case "\\": {
-        return {
-          type: tokenTypes.escape,
           value: undefined,
         };
       }

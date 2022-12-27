@@ -23,7 +23,7 @@ export class Parser {
     return this.parseSelectExpression();
   }
 
-  parseSelectExpression(): Expression {
+  private parseSelectExpression(): Expression {
     let node = this.parseConcatExpression();
     for (;;) {
       if (this.tokenizer.match(tokenTypes.select)) {
@@ -35,7 +35,7 @@ export class Parser {
     }
   }
 
-  parseConcatExpression(): Expression {
+  private parseConcatExpression(): Expression {
     let node = this.parseStarExpression();
     for (;;) {
       if (this.tokenizer.match(tokenTypes.char)) {
@@ -49,7 +49,7 @@ export class Parser {
     }
   }
 
-  parseStarExpression(): Expression {
+  private parseStarExpression(): Expression {
     const expr = this.parseFactor();
     if (this.tokenizer.match(tokenTypes.star)) {
       this.tokenizer.next();
@@ -58,7 +58,7 @@ export class Parser {
     return expr;
   }
 
-  parseFactor(): Expression {
+  private parseFactor(): Expression {
     if (this.tokenizer.match(tokenTypes.open)) {
       this.tokenizer.next();
       const expression = this.parseSelectExpression();
@@ -69,18 +69,10 @@ export class Parser {
         throw new Error("Something wrong");
       }
     }
-    return this.parseEscapedLiteral();
-  }
-
-  parseEscapedLiteral(): Expression {
-    if (this.tokenizer.match(tokenTypes.escape)) {
-      this.tokenizer.next();
-      return this.parseLiteral();
-    }
     return this.parseLiteral();
   }
 
-  parseLiteral(): LiteralExpression {
+  private parseLiteral(): LiteralExpression {
     if (
       this.tokenizer.match(tokenTypes.char) &&
       this.tokenizer.state.type === tokenTypes.char
