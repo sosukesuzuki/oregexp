@@ -44,27 +44,33 @@ export class Nfa {
     this.currentStates = [initialState];
   }
 
+  private getStatesFromLabel(stateLabels: string[]): NfaState[] {
+    return this.states.filter((state) => stateLabels.includes(state.label));
+  }
+
   public read(char: string) {
     if (process.env.NODE_ENV !== "production") {
       assert(/\w/.test(char));
     }
-    const nextStateLabels: string[] = [];
+    console.log(this.currentStates, char);
 
-    // currentStates が持ってる ε    の結果の state 集合を nextStates に push する
-    const eStateLabels = this.currentStates.flatMap((state) => {
-      return state.transitionRules[e];
-    });
-    nextStateLabels.push(...eStateLabels);
+    const eStateLabels = this.currentStates
+      .flatMap((state) => {
+        return state.transitionRules[e];
+      })
+      .filter(Boolean);
+    if (eStateLabels.length > 0) {
+      const eStates = this.getStatesFromLabel(eStateLabels);
+      this.currentStates = eStates;
+    }
 
-    // currentStetes が持ってる char の結果の state 集合を nextStates に push する
-    const charStateLabels = this.currentStates.flatMap((state) => {
-      return state.transitionRules[char];
-    });
-    nextStateLabels.push(...charStateLabels);
+    const nextStateLabels = this.currentStates
+      .flatMap((state) => {
+        return state.transitionRules[char];
+      })
+      .filter(Boolean);
 
-    const nextStates = this.states.filter((state) =>
-      nextStateLabels.includes(state.label)
-    );
+    const nextStates = this.getStatesFromLabel(nextStateLabels);
     this.currentStates = nextStates;
   }
 

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Nfa } from "../nfa.js";
+import { e, Nfa } from "../nfa.js";
 
 describe("nfa", () => {
   it("validates invalid nfa states", () => {
@@ -56,5 +56,41 @@ describe("nfa", () => {
     assert(nfa.accepted);
     nfa.read("d");
     assert(!nfa.accepted);
+  });
+
+  it("foo", () => {
+    const nfa = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: { [e]: ["q1", "q4"] },
+      },
+      {
+        label: "q1",
+        transitionRules: { a: ["q2"] },
+      },
+      {
+        label: "q2",
+        transitionRules: { b: ["q3"] },
+      },
+      {
+        label: "q3",
+        transitionRules: { [e]: ["q1", "q4"] },
+      },
+      {
+        label: "q4",
+        transitionRules: { c: ["q5"] },
+      },
+      {
+        label: "q5",
+        transitionRules: {},
+        accepted: true,
+      },
+    ]);
+    assert(!nfa.accepted);
+    nfa.read("a");
+    nfa.read("b");
+    nfa.read("c");
+    assert(nfa.accepted);
   });
 });
