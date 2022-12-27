@@ -54,5 +54,7 @@ describe("nfa", () => {
     assert(!nfa.accepted);
     nfa.read("c");
     assert(nfa.accepted);
+    nfa.read("d");
+    assert(!nfa.accepted);
   });
 });
