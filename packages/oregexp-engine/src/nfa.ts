@@ -88,4 +88,29 @@ export class Nfa {
   public get accepted(): boolean {
     return this.#currentStates.some((currentState) => currentState.accepted);
   }
+
+  // nfa1 の accepted と nfa2 の initial をそのまま重ねた新しい NFA を返す
+  public static concat(nfa1: Nfa, nfa2: Nfa): Nfa {
+    const nfa1States = nfa1.#states;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
+    const nfa1Accepted = nfa1States.find((state) => state.accepted)!;
+    nfa1Accepted.accepted = undefined;
+
+    const nfa2States = nfa2.#states;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
+    const nfa2Initial = nfa2States.find((state) => state.initial)!;
+    nfa2Initial.initial = undefined;
+
+    for (const state of nfa1States) {
+      const mapper = (stateLabel: string) =>
+        stateLabel === nfa1Accepted.label ? nfa2Initial.label : stateLabel;
+      state.transitionRules[e] = state.transitionRules[e]?.map(mapper);
+      for (const key of Object.keys(state.transitionRules)) {
+        state.transitionRules[key] = state.transitionRules[key]?.map(mapper);
+      }
+    }
+    // nfa1Accepted を取り除く
+    nfa1States.pop();
+    return new Nfa([...nfa1States, ...nfa2States]);
+  }
 }

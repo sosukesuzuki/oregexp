@@ -97,18 +97,54 @@ describe("nfa", () => {
     nfa.read("c");
     assert(nfa.accepted);
 
-    // @ts-expect-error call private method for testing
     nfa.reset();
 
     assert(!nfa.accepted);
     nfa.read("c");
     assert(nfa.accepted);
 
-    // @ts-expect-error call private method for testing
     nfa.reset();
 
     assert(!nfa.accepted);
     assert(nfa.run("c"));
     assert(nfa.run("abababababababc"));
+  });
+
+  it("concats", () => {
+    const nfa1 = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          a: ["q1"],
+        },
+      },
+      {
+        label: "q1",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa2 = new Nfa([
+      {
+        label: "p0",
+        initial: true,
+        transitionRules: {
+          b: ["p1"],
+        },
+      },
+      {
+        label: "p1",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+
+    const nfa3 = Nfa.concat(nfa1, nfa2);
+    assert(!nfa3.accepted);
+    nfa3.read("a");
+    assert(!nfa3.accepted);
+    nfa3.read("b");
+    assert(nfa3.accepted);
   });
 });
