@@ -7,19 +7,17 @@ describe("nfa", () => {
     assert.throws(() => {
       new Nfa([{ label: "foo" }, { label: "bar" }], /* transition */ {});
     });
-  });
-
-  assert.throws(() => {
-    new Nfa(
-      [{ label: "foo", initial: true }, { label: "bar" }],
-      /* transition */ {}
-    );
-  });
-
-  assert.throws(() => {
-    new Nfa(
-      [{ label: "foo", accepted: true }, { label: "bar" }],
-      /* transition */ {}
-    );
+    assert.throws(() => {
+      new Nfa(
+        [{ label: "foo", initial: true }, { label: "bar" }],
+        /* transition */ {}
+      );
+    });
+    assert.throws(() => {
+      new Nfa(
+        [{ label: "foo", accepted: true }, { label: "bar" }],
+        /* transition */ {}
+      );
+    });
   });
 });

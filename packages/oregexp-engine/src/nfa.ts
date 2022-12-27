@@ -39,9 +39,51 @@ function validateStates(states: NfaState[]) {
 }
 
 export class Nfa {
+  private currentStates: NfaState[];
+
   constructor(private states: NfaState[], private transition: Transition) {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
+    const initialState = states.find((state) => state.initial)!;
+    this.currentStates = [initialState];
+  }
+
+  read(char: string | typeof e) {
+    if (process.env.NODE_ENV !== "production") {
+      assert(char === e || /\w/.test(char));
+    }
+    const transitionRules: TransitionRule[] = [];
+
+    // TODO: report to Prettier
+    for (const [stateLabel, transitionRule] of Object.entries(
+      this.transition
+    )) {
+      const rules = this.currentStates
+        .map((currentState) => {
+          if (currentState.label === stateLabel) {
+            return transitionRule;
+          }
+        })
+        .filter(Boolean) as TransitionRule[];
+      transitionRules.push(...rules);
+    }
+
+    const nextStateLabels: StateLabel[] = [];
+    for (const transitionRule of transitionRules) {
+      const labels = transitionRule[char];
+      nextStateLabels.push(...labels);
+    }
+    const nextStates = this.states.filter((state) =>
+      nextStateLabels.includes(state.label)
+    );
+
+    this.currentStates = nextStates;
+  }
+
+  public get accepted(): boolean {
+    return this.currentStates.some((currentState) => currentState.accepted);
   }
 }
