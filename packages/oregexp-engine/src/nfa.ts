@@ -52,7 +52,6 @@ export class Nfa {
     if (process.env.NODE_ENV !== "production") {
       assert(/\w/.test(char));
     }
-    console.log(this.currentStates, char);
 
     const eStateLabels = this.currentStates
       .flatMap((state) => {
