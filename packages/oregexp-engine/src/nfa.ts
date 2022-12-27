@@ -28,7 +28,7 @@ function validateStates(states: NfaState[]) {
 }
 
 export class Nfa {
-  private currentStates: NfaState[] = [];
+  #currentStates: NfaState[] = [];
 
   constructor(private states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
@@ -37,13 +37,13 @@ export class Nfa {
     this.reset();
   }
 
-  private reset() {
+  public reset() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
     const initialState = this.states.find((state) => state.initial)!;
-    this.currentStates = [initialState];
+    this.#currentStates = [initialState];
   }
 
-  private getStatesFromLabel(stateLabels: string[]): NfaState[] {
+  #getStatesFromLabel(stateLabels: string[]): NfaState[] {
     return this.states.filter((state) => stateLabels.includes(state.label));
   }
 
@@ -52,24 +52,24 @@ export class Nfa {
       assert(/\w/.test(char));
     }
 
-    const eStateLabels = this.currentStates
+    const eStateLabels = this.#currentStates
       .flatMap((state) => {
         return state.transitionRules[e];
       })
       .filter(Boolean);
     if (eStateLabels.length > 0) {
-      const eStates = this.getStatesFromLabel(eStateLabels);
-      this.currentStates = eStates;
+      const eStates = this.#getStatesFromLabel(eStateLabels);
+      this.#currentStates = eStates;
     }
 
-    const nextStateLabels = this.currentStates
+    const nextStateLabels = this.#currentStates
       .flatMap((state) => {
         return state.transitionRules[char];
       })
       .filter(Boolean);
 
-    const nextStates = this.getStatesFromLabel(nextStateLabels);
-    this.currentStates = nextStates;
+    const nextStates = this.#getStatesFromLabel(nextStateLabels);
+    this.#currentStates = nextStates;
   }
 
   public run(str: string): boolean {
@@ -84,6 +84,6 @@ export class Nfa {
   }
 
   public get accepted(): boolean {
-    return this.currentStates.some((currentState) => currentState.accepted);
+    return this.#currentStates.some((currentState) => currentState.accepted);
   }
 }
