@@ -110,6 +110,50 @@ describe("nfa", () => {
     assert(nfa.run("abababababababc"));
   });
 
+  it("works for /a|b/", () => {
+    const nfa = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          [e]: ["q1", "q2"],
+        },
+      },
+      {
+        label: "q1",
+        transitionRules: {
+          a: ["q3"],
+        },
+      },
+      {
+        label: "q2",
+        transitionRules: {
+          b: ["q4"],
+        },
+      },
+      {
+        label: "q3",
+        transitionRules: {
+          [e]: ["q5"],
+        },
+      },
+      {
+        label: "q4",
+        transitionRules: {
+          [e]: ["q5"],
+        },
+      },
+      {
+        label: "q5",
+        transitionRules: {},
+        accepted: true,
+      },
+    ]);
+    assert(nfa.run("a"));
+    assert(nfa.run("b"));
+    assert(!nfa.run("abasdflakj"));
+  });
+
   it("concats", () => {
     const nfa1 = new Nfa([
       {
@@ -147,4 +191,39 @@ describe("nfa", () => {
     nfa3.read("b");
     assert(nfa3.accepted);
   });
+
+  //   it("select", () => {
+  //     const nfa1 = new Nfa([
+  //       {
+  //         label: "q0",
+  //         initial: true,
+  //         transitionRules: {
+  //           a: ["q1"],
+  //         },
+  //       },
+  //       {
+  //         label: "q1",
+  //         accepted: true,
+  //         transitionRules: {},
+  //       },
+  //     ]);
+  //     const nfa2 = new Nfa([
+  //       {
+  //         label: "p0",
+  //         initial: true,
+  //         transitionRules: {
+  //           b: ["p1"],
+  //         },
+  //       },
+  //       {
+  //         label: "p1",
+  //         accepted: true,
+  //         transitionRules: {},
+  //       },
+  //     ]);
+  //     const nfa3 = Nfa.select(nfa1, nfa2);
+  //     assert(nfa3.run("a"));
+  //     assert(nfa3.run("b"));
+  //     assert(!nfa3.run("ab"));
+  //   });
 });
