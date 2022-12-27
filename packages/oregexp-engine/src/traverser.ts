@@ -1,4 +1,4 @@
-import { Expression } from "@sosukesuzuki/oregexp-parser";
+import type { Expression } from "@sosukesuzuki/oregexp-parser";
 
 export function traverse(
   expression: Expression,
