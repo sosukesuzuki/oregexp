@@ -90,6 +90,11 @@ describe("nfa", () => {
     assert(!nfa.accepted);
     nfa.read("a");
     nfa.read("b");
+    nfa.read("a");
+    assert(!nfa.accepted);
+    nfa.read("b");
+    nfa.read("a");
+    nfa.read("b");
     nfa.read("c");
     assert(nfa.accepted);
   });
