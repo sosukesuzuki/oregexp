@@ -34,14 +34,8 @@ function validateStates(states: NfaState[]) {
       initialCount++;
     }
   }
-  let errorMessage = "";
-  if (acceptedCount !== 1) {
-    errorMessage += `The number of accepted states is invalid. Expected: 1, Actual: ${acceptedCount}\n`;
-  }
-  if (initialCount !== 1) {
-    errorMessage += `The number of initial states is invalid. Expected: 1, Actual: ${initialCount}\n`;
-  }
-  throw new Error(errorMessage);
+  assert(acceptedCount === 1);
+  assert(initialCount === 1);
 }
 
 export class Nfa {
