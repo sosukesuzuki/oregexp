@@ -4,5 +4,7 @@
     "rootDir": "src",
     "outDir": "lib"
   },
-  "references": [{ "path": "../oregexp-parser" }]
+  "references": [{ "path": "../oregexp-parser" }],
+  "include": ["src"],
+  "exclude": ["tests/**/*"]
 }
