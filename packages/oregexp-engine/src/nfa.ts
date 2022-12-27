@@ -14,14 +14,8 @@ type NfaState = {
   label: StateLabel;
   accepted?: boolean;
   initial?: boolean;
+  transitionRules: Record<string | symbol, string[]>;
 };
-
-type TransitionRule = Record<
-  /* 入力文字(length=0) もしくは ε */ string | typeof e,
-  StateLabel[]
->;
-
-type Transition = Record<StateLabel, TransitionRule>;
 
 function validateStates(states: NfaState[]) {
   let acceptedCount = 0;
@@ -41,45 +35,36 @@ function validateStates(states: NfaState[]) {
 export class Nfa {
   private currentStates: NfaState[];
 
-  constructor(private states: NfaState[], private transition: Transition) {
+  constructor(private states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
     }
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
     const initialState = states.find((state) => state.initial)!;
     this.currentStates = [initialState];
   }
 
-  public read(char: string | typeof e) {
+  public read(char: string) {
     if (process.env.NODE_ENV !== "production") {
-      assert(char === e || /\w/.test(char));
+      assert(/\w/.test(char));
     }
-    const transitionRules: TransitionRule[] = [];
+    const nextStateLabels: string[] = [];
 
-    // TODO: report to Prettier
-    for (const [stateLabel, transitionRule] of Object.entries(
-      this.transition
-    )) {
-      const rules = this.currentStates
-        .map((currentState) => {
-          if (currentState.label === stateLabel) {
-            return transitionRule;
-          }
-        })
-        .filter(Boolean) as TransitionRule[];
-      transitionRules.push(...rules);
-    }
+    // currentStates が持ってる ε    の結果の state 集合を nextStates に push する
+    const eStateLabels = this.currentStates.flatMap((state) => {
+      return state.transitionRules[e];
+    });
+    nextStateLabels.push(...eStateLabels);
 
-    const nextStateLabels: StateLabel[] = [];
-    for (const transitionRule of transitionRules) {
-      const labels = transitionRule[char];
-      nextStateLabels.push(...labels);
-    }
+    // currentStetes が持ってる char の結果の state 集合を nextStates に push する
+    const charStateLabels = this.currentStates.flatMap((state) => {
+      return state.transitionRules[char];
+    });
+    nextStateLabels.push(...charStateLabels);
+
     const nextStates = this.states.filter((state) =>
       nextStateLabels.includes(state.label)
     );
-
     this.currentStates = nextStates;
   }
 
