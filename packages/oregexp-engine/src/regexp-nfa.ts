@@ -38,11 +38,13 @@ export function createLiteralNfa(literalExpr: LiteralExpression): Nfa {
   return nfa;
 }
 
-export function createConcatNfa(concatExpr: ConcatExpression): Nfa {}
+export function createConcatNfa(concatExpr: ConcatExpression): Nfa {
+  const left = createNfaFromAst(concatExpr.left);
+  const right = createNfaFromAst(concatExpr.right);
+  const concatNfa = Nfa.concat(left, right);
+  return concatNfa;
+}
 
 export function createStarNfa(starExpr: StarExpression): Nfa {}
 
-export function createSelectNfa(selectExpr: SelectExpression): Nfa {
-  const leftNfa = createNfaFromAst(selectExpr.left);
-  const rightNfa = createNfaFromAst(selectExpr.right);
-}
+export function createSelectNfa(selectExpr: SelectExpression): Nfa {}
