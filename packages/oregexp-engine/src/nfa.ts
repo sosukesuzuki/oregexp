@@ -72,6 +72,17 @@ export class Nfa {
     this.currentStates = nextStates;
   }
 
+  public run(str: string): boolean {
+    try {
+      for (const char of str) {
+        this.read(char);
+      }
+      return this.accepted;
+    } finally {
+      this.reset();
+    }
+  }
+
   public get accepted(): boolean {
     return this.currentStates.some((currentState) => currentState.accepted);
   }

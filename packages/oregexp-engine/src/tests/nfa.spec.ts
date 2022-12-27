@@ -103,5 +103,12 @@ describe("nfa", () => {
     assert(!nfa.accepted);
     nfa.read("c");
     assert(nfa.accepted);
+
+    // @ts-expect-error call private method for testing
+    nfa.reset();
+
+    assert(!nfa.accepted);
+    assert(nfa.run("c"));
+    assert(nfa.run("abababababababc"));
   });
 });
