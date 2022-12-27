@@ -29,22 +29,24 @@ function validateStates(states: NfaState[]) {
 
 export class Nfa {
   #currentStates: NfaState[] = [];
+  #states: NfaState[];
 
-  constructor(private states: NfaState[]) {
+  constructor(states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
     }
+    this.#states = states;
     this.reset();
   }
 
   public reset() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
-    const initialState = this.states.find((state) => state.initial)!;
+    const initialState = this.#states.find((state) => state.initial)!;
     this.#currentStates = [initialState];
   }
 
   #getStatesFromLabel(stateLabels: string[]): NfaState[] {
-    return this.states.filter((state) => stateLabels.includes(state.label));
+    return this.#states.filter((state) => stateLabels.includes(state.label));
   }
 
   public read(char: string) {
