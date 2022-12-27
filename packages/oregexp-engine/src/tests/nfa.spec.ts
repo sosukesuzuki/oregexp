@@ -24,8 +24,7 @@ describe("nfa", () => {
     });
   });
 
-  it("works with the simplest NFA", () => {
-    // 正規表現 "abc" と等価の NFA
+  it("works for /abc/", () => {
     const nfa = new Nfa([
       {
         label: "q0",
@@ -58,7 +57,7 @@ describe("nfa", () => {
     assert(!nfa.accepted);
   });
 
-  it("foo", () => {
+  it("works for /(ab)*c/", () => {
     const nfa = new Nfa([
       {
         label: "q0",

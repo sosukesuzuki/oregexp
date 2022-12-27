@@ -1,10 +1,5 @@
 import assert from "node:assert/strict";
 
-// ステートの集合
-//   初期状態
-//   受理状態
-// 遷移関数
-
 // ε遷移を表す
 export const e = Symbol("epsilon");
 
