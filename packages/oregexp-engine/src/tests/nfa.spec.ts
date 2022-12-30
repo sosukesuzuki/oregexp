@@ -276,4 +276,45 @@ describe("nfa", () => {
     assert(!nfa3.accepted);
     nfa3.reset();
   });
+
+  it("works star", () => {
+    const nfa1 = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          a: ["q1"],
+        },
+      },
+      {
+        label: "q1",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa2 = Nfa.star(nfa1);
+
+    // assert(!nfa2.accepted);
+    // nfa2.read("");
+    // assert(nfa2.accepted);
+    // nfa2.reset();
+
+    assert(!nfa2.accepted);
+    nfa2.read("a");
+    assert(nfa2.accepted);
+    nfa2.reset();
+
+    assert(!nfa2.accepted);
+    nfa2.read("a");
+    nfa2.read("a");
+    nfa2.read("a");
+    nfa2.read("a");
+    assert(nfa2.accepted);
+    nfa2.reset();
+
+    assert(!nfa2.accepted);
+    nfa2.read("b");
+    assert(!nfa2.accepted);
+    nfa2.reset();
+  });
 });

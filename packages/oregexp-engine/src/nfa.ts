@@ -77,7 +77,7 @@ export class Nfa {
 
   public read(char: string) {
     if (process.env.NODE_ENV !== "production") {
-      assert(/\w/.test(char));
+      assert(char === "" || /\w/.test(char));
     }
 
     this.readEpsilon();
@@ -182,5 +182,43 @@ export class Nfa {
       m2Accepted,
       m3Accepted,
     ]);
+  }
+
+  public static star(nfa: Nfa) {
+    const q0 = nfa.#initialState;
+    const q1 = nfa.#acceptedState;
+
+    const m1Initial: NfaState = {
+      label: q0.label,
+      transitionRules: q0.transitionRules,
+    };
+
+    const m2UUID = crypto.randomUUID();
+    const m2Accepted: NfaState = {
+      label: `${m2UUID}-accepted`,
+      accepted: true,
+      transitionRules: {},
+    };
+
+    const m1Accepted: NfaState = {
+      label: q1.label,
+      transitionRules: {
+        [e]: [m1Initial.label, m2Accepted.label],
+      },
+    };
+
+    const m2Initial: NfaState = {
+      label: `${m2UUID}-initial`,
+      initial: true,
+      transitionRules: {
+        [e]: [m1Initial.label, m2Accepted.label],
+      },
+    };
+
+    const states = [...nfa.#states];
+    states.shift();
+    states.pop();
+
+    return new Nfa([m2Initial, m1Initial, ...states, m1Accepted, m2Accepted]);
   }
 }
