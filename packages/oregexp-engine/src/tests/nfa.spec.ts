@@ -47,6 +47,7 @@ describe("nfa", () => {
       },
       { label: "q3", accepted: true, transitionRules: {} },
     ]);
+    Nfa.expand(nfa);
     nfa.read("a");
     assert(!nfa.accepted);
     nfa.read("b");
@@ -86,6 +87,7 @@ describe("nfa", () => {
         accepted: true,
       },
     ]);
+    Nfa.expand(nfa);
     assert(!nfa.accepted);
     nfa.read("a");
     nfa.read("b");

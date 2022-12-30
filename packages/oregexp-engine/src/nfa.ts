@@ -31,6 +31,8 @@ export class Nfa {
   #currentStates: NfaState[] = [];
   #states: NfaState[];
 
+  #expanded = false;
+
   constructor(states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
@@ -55,6 +57,10 @@ export class Nfa {
   public read(char: string) {
     if (process.env.NODE_ENV !== "production") {
       assert(/\w/.test(char));
+    }
+
+    if (!this.#expanded) {
+      throw new Error("NFA must be ε-expanded");
     }
 
     const eStateLabels = this.#currentStates
@@ -90,5 +96,9 @@ export class Nfa {
 
   public get accepted(): boolean {
     return this.#currentStates.some((currentState) => currentState.accepted);
+  }
+
+  public static expand(nfa: Nfa): void {
+    nfa.#expanded = true;
   }
 }
