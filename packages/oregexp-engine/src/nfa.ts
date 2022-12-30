@@ -48,6 +48,11 @@ export class Nfa {
     return this.#states.find((state) => state.initial)!;
   }
 
+  get #acceptedState() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
+    return this.#states.find((state) => state.accepted)!;
+  }
+
   #getStatesFromLabel(stateLabels: string[]): NfaState[] {
     return this.#states.filter((state) => stateLabels.includes(state.label));
   }
@@ -95,5 +100,19 @@ export class Nfa {
 
   public get accepted(): boolean {
     return this.#currentStates.some((currentState) => currentState.accepted);
+  }
+
+  public static concat(nfa1: Nfa, nfa2: Nfa): Nfa {
+    const q1 = nfa1.#acceptedState;
+    const q2 = nfa2.#initialState;
+    const newQ: NfaState = {
+      label: q1.label,
+      transitionRules: { ...q2.transitionRules },
+    };
+    const states1 = [...nfa1.#states];
+    const states2 = [...nfa2.#states];
+    states1.pop();
+    states2.shift();
+    return new Nfa([...states1, newQ, ...states2]);
   }
 }
