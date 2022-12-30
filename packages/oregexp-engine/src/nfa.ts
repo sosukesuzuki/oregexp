@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import assert from "node:assert/strict";
 
 // ε遷移を表す
@@ -50,11 +49,6 @@ export class Nfa {
     return this.#states.find((state) => state.initial)!;
   }
 
-  get #acceptedState() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
-    return this.#states.find((state) => state.accepted)!;
-  }
-
   #getStatesFromLabel(stateLabels: string[]): NfaState[] {
     return this.#states.filter((state) => stateLabels.includes(state.label));
   }
@@ -98,63 +92,4 @@ export class Nfa {
   public get accepted(): boolean {
     return this.#currentStates.some((currentState) => currentState.accepted);
   }
-
-  // nfa1 の accepted と nfa2 の initial をそのまま重ねた新しい NFA を返す
-  public static concat(nfa1: Nfa, nfa2: Nfa): Nfa {
-    const nfa1States = nfa1.#states;
-    const nfa1Accepted = nfa1.#acceptedState;
-    nfa1Accepted.accepted = undefined;
-
-    const nfa2States = nfa2.#states;
-    const nfa2Initial = nfa2.#initialState;
-    nfa2Initial.initial = undefined;
-
-    for (const state of nfa1States) {
-      const mapper = (stateLabel: string) =>
-        stateLabel === nfa1Accepted.label ? nfa2Initial.label : stateLabel;
-      state.transitionRules[e] = state.transitionRules[e]?.map(mapper);
-      for (const key of Object.keys(state.transitionRules)) {
-        state.transitionRules[key] = state.transitionRules[key]?.map(mapper);
-      }
-    }
-    // nfa1Accepted を取り除く
-    nfa1States.pop();
-    return new Nfa([...nfa1States, ...nfa2States]);
-  }
-
-  //   public static select(nfa1: Nfa, nfa2: Nfa): Nfa {
-  //     const baseId = crypto.randomUUID();
-  //     const initialState: NfaState = {
-  //       initial: true,
-  //       label: `${baseId}-0`,
-  //       transitionRules: {
-  //         [e]: [nfa1.#initialState.label, nfa2.#initialState.label],
-  //       },
-  //     };
-  //     const finalStateLabel = `${baseId}-1`;
-  //     const finalState: NfaState = {
-  //       accepted: true,
-  //       label: finalStateLabel,
-  //       transitionRules: {},
-  //     };
-
-  //     nfa1.#acceptedState.transitionRules = {
-  //       [e]: [finalStateLabel],
-  //     };
-  //     nfa2.#acceptedState.transitionRules = {
-  //       [e]: [finalStateLabel],
-  //     };
-
-  //     nfa1.#initialState.initial = undefined;
-  //     nfa2.#initialState.initial = undefined;
-  //     nfa1.#acceptedState.accepted = undefined;
-  //     nfa2.#acceptedState.accepted = undefined;
-
-  //     return new Nfa([
-  //       initialState,
-  //       ...nfa1.#states,
-  //       ...nfa2.#states,
-  //       finalState,
-  //     ]);
-  //   }
 }
