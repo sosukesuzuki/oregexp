@@ -58,11 +58,7 @@ export class Nfa {
     return this.#states.filter((state) => stateLabels.includes(state.label));
   }
 
-  public read(char: string) {
-    if (process.env.NODE_ENV !== "production") {
-      assert(/\w/.test(char));
-    }
-
+  public readEpsilon() {
     let shouldLoopForE = true;
     while (shouldLoopForE) {
       const eStateLabels = this.#currentStates
@@ -77,6 +73,14 @@ export class Nfa {
         shouldLoopForE = false;
       }
     }
+  }
+
+  public read(char: string) {
+    if (process.env.NODE_ENV !== "production") {
+      assert(/\w/.test(char));
+    }
+
+    this.readEpsilon();
 
     const nextStateLabels = this.#currentStates
       .flatMap((state) => {
@@ -86,6 +90,8 @@ export class Nfa {
 
     const nextStates = this.#getStatesFromLabel(nextStateLabels);
     this.#currentStates = nextStates;
+
+    this.readEpsilon();
   }
 
   public run(str: string): boolean {
