@@ -82,14 +82,16 @@ export class Nfa {
 
     this.readEpsilon();
 
-    const nextStateLabels = this.#currentStates
-      .flatMap((state) => {
-        return state.transitionRules[char];
-      })
-      .filter(Boolean);
+    if (char !== "") {
+      const nextStateLabels = this.#currentStates
+        .flatMap((state) => {
+          return state.transitionRules[char];
+        })
+        .filter(Boolean);
 
-    const nextStates = this.#getStatesFromLabel(nextStateLabels);
-    this.#currentStates = nextStates;
+      const nextStates = this.#getStatesFromLabel(nextStateLabels);
+      this.#currentStates = nextStates;
+    }
 
     this.readEpsilon();
   }

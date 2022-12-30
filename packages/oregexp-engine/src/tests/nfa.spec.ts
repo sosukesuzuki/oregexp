@@ -294,10 +294,10 @@ describe("nfa", () => {
     ]);
     const nfa2 = Nfa.star(nfa1);
 
-    // assert(!nfa2.accepted);
-    // nfa2.read("");
-    // assert(nfa2.accepted);
-    // nfa2.reset();
+    assert(!nfa2.accepted);
+    nfa2.read("");
+    assert(nfa2.accepted);
+    nfa2.reset();
 
     assert(!nfa2.accepted);
     nfa2.read("a");
