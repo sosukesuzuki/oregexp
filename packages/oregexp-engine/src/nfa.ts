@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 
 // ε遷移を表す
-export const e = Symbol("epsilon");
+export const e = "__e__";
 
 type StateLabel = string;
 
@@ -35,7 +35,6 @@ export class Nfa {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
     }
-    console.log("=============");
     this.#states = states;
     this.reset();
   }
