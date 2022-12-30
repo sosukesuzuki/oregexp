@@ -13,6 +13,13 @@
   "env": { "node": true },
   "rules": {
     "unicorn/prefer-node-protocol": "error",
-    "import/extensions": ["error", "always"]
+    "import/extensions": ["error", "always"],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "CallExpression[callee.name='printStateTable']",
+        "message": "`printStateTable` is for debugging."
+      }
+    ]
   }
 }

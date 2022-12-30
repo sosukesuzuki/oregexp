@@ -8,8 +8,9 @@
     "@sosukesuzuki/oregexp-parser": "^0.1.0"
   },
   "devDependencies": {
-    "typescript": "^4.9.4",
-    "tsx": "^3.12.1"
+    "table": "^6.8.1",
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.4"
   },
   "types": "./lib/index.d.ts",
   "scripts": {

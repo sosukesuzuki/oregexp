@@ -1,12 +1,11 @@
 import assert from "node:assert/strict";
-import crypto from "node:crypto";
 
 // ε遷移を表す
 export const e = "__e__";
 
 type StateLabel = string;
 
-type NfaState = {
+export type NfaState = {
   label: StateLabel;
   accepted?: boolean;
   initial?: boolean;
@@ -31,6 +30,8 @@ function validateStates(states: NfaState[]) {
 export class Nfa {
   #currentStates: NfaState[] = [];
   #states: NfaState[];
+
+  static #counter = 0;
 
   constructor(states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
@@ -126,9 +127,9 @@ export class Nfa {
   }
 
   public static select(nfa1: Nfa, nfa2: Nfa): Nfa {
-    const m3UUID = crypto.randomUUID();
+    const m3LabelPrefix = `star-${Nfa.#counter++}`;
     const m3Accepted: NfaState = {
-      label: `${m3UUID}-accepted`,
+      label: `${m3LabelPrefix}-accepted`,
       accepted: true,
       transitionRules: {},
     };
@@ -160,7 +161,7 @@ export class Nfa {
     };
 
     const m3Initial: NfaState = {
-      label: `${m3UUID}-initial`,
+      label: `${m3LabelPrefix}-initial`,
       initial: true,
       transitionRules: {
         [e]: [m1Initial.label, m2Initial.label],
@@ -195,9 +196,9 @@ export class Nfa {
       transitionRules: q0.transitionRules,
     };
 
-    const m2UUID = crypto.randomUUID();
+    const m2LabelPrefix = `star-${Nfa.#counter++}`;
     const m2Accepted: NfaState = {
-      label: `${m2UUID}-accepted`,
+      label: `${m2LabelPrefix}-accepted`,
       accepted: true,
       transitionRules: {},
     };
@@ -210,7 +211,7 @@ export class Nfa {
     };
 
     const m2Initial: NfaState = {
-      label: `${m2UUID}-initial`,
+      label: `${m2LabelPrefix}-initial`,
       initial: true,
       transitionRules: {
         [e]: [m1Initial.label, m2Accepted.label],

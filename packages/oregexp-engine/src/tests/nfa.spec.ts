@@ -317,4 +317,38 @@ describe("nfa", () => {
     assert(!nfa2.accepted);
     nfa2.reset();
   });
+
+  it("works select and star", () => {
+    const nfa1 = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          a: ["q1"],
+        },
+      },
+      {
+        label: "q1",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa2 = new Nfa([
+      {
+        label: "q2",
+        initial: true,
+        transitionRules: {
+          b: ["q3"],
+        },
+      },
+      {
+        label: "q3",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa3 = Nfa.select(nfa1, nfa2);
+    const nfa4 = Nfa.star(nfa3);
+    assert(nfa4.run("a"));
+  });
 });
