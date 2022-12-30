@@ -11,10 +11,16 @@ export function printStateTable(states: NfaState[]) {
   const stateLabels = states.map((state) => state.label);
   const rows: string[][] = [];
   for (const stateLabel of stateLabels) {
-    const row: string[] = [stateLabel];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const state = states.find((state) => state.label === stateLabel)!;
+    let stateLabelText = stateLabel;
+    if (state.accepted) {
+      stateLabelText += "(accepted)";
+    } else if (state.initial) {
+      stateLabelText += "(initial)";
+    }
+    const row: string[] = [stateLabelText];
     for (const char of chars) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const state = states.find((state) => state.label === stateLabel)!;
       if (state.transitionRules[char]) {
         const nextStateLabels = state.transitionRules[char].join(", ");
         row.push(nextStateLabels);
