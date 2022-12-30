@@ -47,7 +47,6 @@ describe("nfa", () => {
       },
       { label: "q3", accepted: true, transitionRules: {} },
     ]);
-    Nfa.expand(nfa);
     nfa.read("a");
     assert(!nfa.accepted);
     nfa.read("b");
@@ -87,7 +86,6 @@ describe("nfa", () => {
         accepted: true,
       },
     ]);
-    Nfa.expand(nfa);
     assert(!nfa.accepted);
     nfa.read("a");
     nfa.read("b");
@@ -110,5 +108,88 @@ describe("nfa", () => {
     assert(!nfa.accepted);
     assert(nfa.run("c"));
     assert(nfa.run("abababababababc"));
+  });
+
+  it("works for ε-ε-a", () => {
+    const nfa = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          [e]: ["q1"],
+        },
+      },
+      {
+        label: "q1",
+        transitionRules: {
+          [e]: ["q2"],
+        },
+      },
+      {
+        label: "q2",
+        transitionRules: {
+          a: ["q3"],
+        },
+      },
+      {
+        label: "q3",
+        transitionRules: {},
+        accepted: true,
+      },
+    ]);
+    assert(!nfa.accepted);
+    nfa.read("a");
+    assert(nfa.accepted);
+  });
+
+  it("works for /(a|b)c/", () => {
+    const nfa = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          [e]: ["q1", "q2"],
+        },
+      },
+      {
+        label: "q1",
+        transitionRules: {
+          a: ["q3"],
+        },
+      },
+      {
+        label: "q2",
+        transitionRules: {
+          b: ["q4"],
+        },
+      },
+      {
+        label: "q3",
+        transitionRules: {
+          [e]: ["q5"],
+        },
+      },
+      {
+        label: "q4",
+        transitionRules: {
+          [e]: ["q5"],
+        },
+      },
+      {
+        label: "q5",
+        transitionRules: {
+          c: ["q6"],
+        },
+      },
+      {
+        label: "q6",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    assert(!nfa.accepted);
+    assert(nfa.run("ac"));
+    assert(nfa.run("bc"));
+    assert(!nfa.run("abc"));
   });
 });

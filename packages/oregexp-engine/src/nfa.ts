@@ -31,8 +31,6 @@ export class Nfa {
   #currentStates: NfaState[] = [];
   #states: NfaState[];
 
-  #expanded = false;
-
   constructor(states: NfaState[]) {
     if (process.env.NODE_ENV !== "production") {
       validateStates(states);
@@ -59,18 +57,19 @@ export class Nfa {
       assert(/\w/.test(char));
     }
 
-    if (!this.#expanded) {
-      throw new Error("NFA must be ε-expanded");
-    }
-
-    const eStateLabels = this.#currentStates
-      .flatMap((state) => {
-        return state.transitionRules[e];
-      })
-      .filter(Boolean);
-    if (eStateLabels.length > 0) {
-      const eStates = this.#getStatesFromLabel(eStateLabels);
-      this.#currentStates = eStates;
+    let shouldLoopForE = true;
+    while (shouldLoopForE) {
+      const eStateLabels = this.#currentStates
+        .flatMap((state) => {
+          return state.transitionRules[e];
+        })
+        .filter(Boolean);
+      if (eStateLabels.length > 0) {
+        const eStates = this.#getStatesFromLabel(eStateLabels);
+        this.#currentStates = eStates;
+      } else {
+        shouldLoopForE = false;
+      }
     }
 
     const nextStateLabels = this.#currentStates
@@ -96,9 +95,5 @@ export class Nfa {
 
   public get accepted(): boolean {
     return this.#currentStates.some((currentState) => currentState.accepted);
-  }
-
-  public static expand(nfa: Nfa): void {
-    nfa.#expanded = true;
   }
 }
