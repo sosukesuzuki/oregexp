@@ -47,4 +47,9 @@ export function createConcatNfa(concatExpr: ConcatExpression): Nfa {
 
 export function createStarNfa(starExpr: StarExpression): Nfa {}
 
-export function createSelectNfa(selectExpr: SelectExpression): Nfa {}
+export function createSelectNfa(selectExpr: SelectExpression): Nfa {
+  const left = createNfaFromAst(selectExpr.left);
+  const right = createNfaFromAst(selectExpr.right);
+  const selectNfa = Nfa.select(left, right);
+  return selectNfa;
+}
