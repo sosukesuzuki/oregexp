@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 
 // ε遷移を表す
 export const e = "__e__";
@@ -114,5 +115,66 @@ export class Nfa {
     states1.pop();
     states2.shift();
     return new Nfa([...states1, newQ, ...states2]);
+  }
+
+  public static select(nfa1: Nfa, nfa2: Nfa): Nfa {
+    const m3UUID = crypto.randomUUID();
+    const m3Accepted: NfaState = {
+      label: `${m3UUID}-accepted`,
+      accepted: true,
+      transitionRules: {},
+    };
+
+    const q0 = nfa1.#initialState;
+    const q1 = nfa1.#acceptedState;
+    const m1Initial: NfaState = {
+      label: q0.label,
+      transitionRules: q0.transitionRules,
+    };
+    const m1Accepted: NfaState = {
+      label: q1.label,
+      transitionRules: {
+        [e]: [m3Accepted.label],
+      },
+    };
+
+    const q2 = nfa2.#initialState;
+    const q3 = nfa2.#acceptedState;
+    const m2Initial: NfaState = {
+      label: q2.label,
+      transitionRules: q2.transitionRules,
+    };
+    const m2Accepted: NfaState = {
+      label: q3.label,
+      transitionRules: {
+        [e]: [m3Accepted.label],
+      },
+    };
+
+    const m3Initial: NfaState = {
+      label: `${m3UUID}-initial`,
+      initial: true,
+      transitionRules: {
+        [e]: [m1Initial.label, m2Initial.label],
+      },
+    };
+
+    const state1 = [...nfa1.#states];
+    const state2 = [...nfa2.#states];
+    state1.shift();
+    state1.pop();
+    state2.shift();
+    state2.pop();
+
+    return new Nfa([
+      m3Initial,
+      m1Initial,
+      ...state1,
+      m1Accepted,
+      m2Initial,
+      ...state2,
+      m2Accepted,
+      m3Accepted,
+    ]);
   }
 }

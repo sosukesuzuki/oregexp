@@ -229,4 +229,51 @@ describe("nfa", () => {
     nfa3.read("b");
     assert(nfa3.accepted);
   });
+
+  it("works for select", () => {
+    const nfa1 = new Nfa([
+      {
+        label: "q0",
+        initial: true,
+        transitionRules: {
+          a: ["q1"],
+        },
+      },
+      {
+        label: "q1",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa2 = new Nfa([
+      {
+        label: "q2",
+        initial: true,
+        transitionRules: {
+          b: ["q3"],
+        },
+      },
+      {
+        label: "q3",
+        accepted: true,
+        transitionRules: {},
+      },
+    ]);
+    const nfa3 = Nfa.select(nfa1, nfa2);
+
+    assert(!nfa3.accepted);
+    nfa3.read("a");
+    assert(nfa3.accepted);
+    nfa3.reset();
+
+    assert(!nfa3.accepted);
+    nfa3.read("b");
+    assert(nfa3.accepted);
+    nfa3.reset();
+
+    assert(!nfa3.accepted);
+    nfa3.read("c");
+    assert(!nfa3.accepted);
+    nfa3.reset();
+  });
 });
