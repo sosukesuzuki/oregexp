@@ -34,8 +34,13 @@ const testCases: TestCases = [
   },
   {
     regexp: "(a|b)*",
-    valid: ["abababababab"],
+    valid: ["abababababab", "a", "b"],
     invalid: ["cc"],
+  },
+  {
+    regexp: "(a|b)*ccc",
+    valid: ["ababababccc", "accc", "bccc"],
+    invalid: ["abababababc"],
   },
 ];
 
