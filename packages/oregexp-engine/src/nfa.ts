@@ -27,6 +27,18 @@ function validateStates(states: NfaState[]) {
   assert(initialCount === 1);
 }
 
+function isSameArray<T>(arr1: Array<T>, arr2: Array<T>) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export class Nfa {
   #currentStates: NfaState[] = [];
   #states: NfaState[];
@@ -59,20 +71,29 @@ export class Nfa {
     return this.#states.filter((state) => stateLabels.includes(state.label));
   }
 
-  public readEpsilon() {
-    let shouldLoopForE = true;
-    while (shouldLoopForE) {
-      const eStateLabels = this.#currentStates
-        .flatMap((state) => {
-          return state.transitionRules[e];
-        })
-        .filter(Boolean);
-      if (eStateLabels.length > 0) {
-        const eStates = this.#getStatesFromLabel(eStateLabels);
-        this.#currentStates = eStates;
-      } else {
-        shouldLoopForE = false;
+  #readEpsilon() {
+    let shouldLoop = true;
+    const getNextEStates = (label: string): string[] => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- validateStates で検証してあるため
+      const state = this.#states.find((state) => state.label === label)!;
+      const eStates = state.transitionRules[e];
+      if (eStates && eStates.length > 0) {
+        shouldLoop = true;
+        return eStates;
       }
+      return [label];
+    };
+    while (shouldLoop) {
+      const nextStateLabels: string[] = [];
+      const currentStateLabels: string[] = [];
+      for (const currentState of this.#currentStates) {
+        nextStateLabels.push(...getNextEStates(currentState.label));
+        currentStateLabels.push(currentState.label);
+      }
+      if (isSameArray(currentStateLabels, nextStateLabels)) {
+        shouldLoop = false;
+      }
+      this.#currentStates = this.#getStatesFromLabel(nextStateLabels);
     }
   }
 
@@ -81,7 +102,7 @@ export class Nfa {
       assert(char === "" || /\w/.test(char));
     }
 
-    this.readEpsilon();
+    this.#readEpsilon();
 
     if (char !== "") {
       const nextStateLabels = this.#currentStates
@@ -94,7 +115,7 @@ export class Nfa {
       this.#currentStates = nextStates;
     }
 
-    this.readEpsilon();
+    this.#readEpsilon();
   }
 
   public run(str: string): boolean {

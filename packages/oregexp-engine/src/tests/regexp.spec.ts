@@ -32,6 +32,11 @@ const testCases: TestCases = [
     valid: ["aaaaaa"],
     invalid: ["cababab", "ddd"],
   },
+  {
+    regexp: "(a|b)*",
+    valid: ["abababababab"],
+    invalid: ["cc"],
+  },
 ];
 
 describe("regexp", () => {
