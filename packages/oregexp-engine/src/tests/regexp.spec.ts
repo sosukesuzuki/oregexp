@@ -42,6 +42,17 @@ const testCases: TestCases = [
     valid: ["ababababccc", "accc", "bccc"],
     invalid: ["abababababc"],
   },
+  {
+    regexp: "suzuki(d|k|t|s|n)osuke",
+    valid: [
+      "suzukisosuke",
+      "suzukidosuke",
+      "suzukikosuke",
+      "suzukitosuke",
+      "suzukinosuke",
+    ],
+    invalid: ["suzukihosuke"],
+  },
 ];
 
 describe("regexp", () => {
