@@ -2,6 +2,6 @@
   "files": [],
   "references": [
     { "path": "packages/oregexp-parser" },
-    { "path": "packages/oregexp-engine" }
+    { "path": "packages/oregexp-engine-nfa" }
   ]
 }

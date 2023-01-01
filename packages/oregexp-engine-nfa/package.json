@@ -1,5 +1,5 @@
 {
-  "name": "@sosukesuzuki/oregexp-engine",
+  "name": "@sosukesuzuki/oregexp-engine-nfa",
   "version": "0.1.0",
   "exports": {
     ".": "./lib/index.js"

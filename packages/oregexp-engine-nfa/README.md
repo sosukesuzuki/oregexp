@@ -1,4 +1,4 @@
-# `@sosukesuzuki/oregexp-engine`
+# `@sosukesuzuki/oregexp-engine-nfa`
 
 ## API
 
