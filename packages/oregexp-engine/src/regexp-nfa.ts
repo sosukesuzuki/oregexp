@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import type {
   ConcatExpression,
   Expression,
@@ -21,8 +20,10 @@ export function createNfaFromAst(expression: Expression): Nfa {
   throw new Error(`Invalid expression type : '${JSON.stringify(expression)}'`);
 }
 
+let literalNfaId = 0;
+
 export function createLiteralNfa(literalExpr: LiteralExpression): Nfa {
-  const id = crypto.randomUUID();
+  const id = literalNfaId++;
   const nfa = new Nfa([
     {
       label: `${id}-0`,
