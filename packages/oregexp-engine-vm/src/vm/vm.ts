@@ -49,10 +49,17 @@ class VM {
 
   public run(): boolean {
     while (this.programCounter < this.instructions.length) {
+      let result = false;
       if (this.instruction.code === instructionCodes.match) {
         return true;
+      } else if (this.instruction.code === instructionCodes.char) {
+        result = this.instructionChar(this.instruction);
+      } else if (this.instruction.code === instructionCodes.jmp) {
+        result = this.instructionJmp(this.instruction);
+      } else if (this.instruction.code === instructionCodes.split) {
+        result = this.instructionSplit(this.instruction);
       }
-      const result = this.runInstruction(this.instruction);
+
       if (!result) {
         const stackValue = this.stack.pop();
         if (stackValue) {
@@ -66,19 +73,6 @@ class VM {
     return true;
   }
 
-  private runInstruction(instruction: Instruction): boolean {
-    switch (instruction.code) {
-      case instructionCodes.char:
-        return this.instructionChar(instruction);
-      case instructionCodes.match:
-        return this.instructionMatch(instruction);
-      case instructionCodes.jmp:
-        return this.instructionJmp(instruction);
-      case instructionCodes.split:
-        return this.instructionSplit(instruction);
-    }
-  }
-
   private instructionChar(instruction: InstructionChar): boolean {
     if (instruction.char === this.char) {
       this.stringPointer++;
@@ -87,13 +81,6 @@ class VM {
     } else {
       return false;
     }
-  }
-
-  private instructionMatch(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- to keep the same interface
-    instruction: InstructionMatch
-  ): boolean {
-    return true;
   }
 
   private instructionJmp(instruction: InstructionJmp): boolean {
