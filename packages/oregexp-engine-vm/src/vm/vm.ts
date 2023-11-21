@@ -2,7 +2,6 @@ import {
   instructionCodes,
   Instruction,
   InstructionChar,
-  InstructionMatch,
   InstructionJmp,
   InstructionSplit,
 } from "./instructions.js";
