@@ -22,60 +22,70 @@ function compileConcat(value: ConcatExpression): Instruction[] {
 
 // compile a*
 function compileStar(value: StarExpression): Instruction[] {
-  const start = [];
-  const end = [];
-  const body = compileNode(value.expression);
-  const bodyLength = body.length;
-  const startOffset = 1 + bodyLength + 2;
-  const endOffset = 1 + bodyLength + 2;
-  start.push({
+  // L1: split L2, L3
+  // L2: compileNode(value.expression)
+  //     jmp L1
+  // L3:
+
+  const instructions: Instruction[] = [];
+
+  const l2 = compileNode(value.expression);
+
+  const l1 = {
     code: instructionCodes.split,
-    offset1: startOffset,
-    offset2: endOffset,
-  });
-  for (const instruction of body) {
-    start.push(instruction);
+    offset1: 1,
+    offset2: l2.length + 2,
+  };
+
+  instructions.push(l1);
+
+  for (const instruction of l2) {
+    instructions.push(instruction);
   }
-  start.push({
+
+  instructions.push({
     code: instructionCodes.jmp,
-    offset: -startOffset,
+    offset: -(l2.length + 1),
   });
-  end.push({
-    code: instructionCodes.jmp,
-    offset: -endOffset,
-  });
-  return [...start, ...end];
+
+  return instructions;
 }
 
 function compileSelect(value: SelectExpression): Instruction[] {
-  const start = [];
-  const end = [];
-  const left = compileNode(value.left);
-  const right = compileNode(value.right);
-  const leftLength = left.length;
-  const rightLength = right.length;
-  const startOffset = 1 + leftLength + 2;
-  const endOffset = 1 + rightLength + 1;
-  start.push({
+  // split L1, L2
+  // L1: compileNode(value.left)
+  //     jmp L3
+  // L2: compileNode(value.right)
+  // L3:
+
+  const instructions: Instruction[] = [];
+
+  const l1 = compileNode(value.left);
+  const l2 = compileNode(value.right);
+
+  const l1Offset = 1;
+  const l2Offset = l1Offset + l1.length + 1;
+
+  instructions.push({
     code: instructionCodes.split,
-    offset1: startOffset,
-    offset2: endOffset,
+    offset1: l1Offset,
+    offset2: l2Offset,
   });
-  for (const instruction of left) {
-    start.push(instruction);
+
+  for (const instruction of l1) {
+    instructions.push(instruction);
   }
-  start.push({
+
+  instructions.push({
     code: instructionCodes.jmp,
-    offset: -startOffset,
+    offset: l2.length + 1,
   });
-  for (const instruction of right) {
-    end.push(instruction);
+
+  for (const instruction of l2) {
+    instructions.push(instruction);
   }
-  end.push({
-    code: instructionCodes.jmp,
-    offset: -endOffset,
-  });
-  return [...start, ...end];
+
+  return instructions;
 }
 
 function compileNode(ast: Expression): Instruction[] {

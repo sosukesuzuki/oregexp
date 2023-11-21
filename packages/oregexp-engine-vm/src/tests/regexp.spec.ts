@@ -27,8 +27,7 @@ const testCases: TestCases = [
   },
   {
     regexp: "a*",
-    // TODO: support empty char
-    valid: ["aaaaaaaa", "a"],
+    valid: ["", "aaaaaaaa", "a"],
     invalid: ["b", "aaaabaaaaa"],
   },
   {
