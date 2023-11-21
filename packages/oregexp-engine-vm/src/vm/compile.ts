@@ -17,14 +17,14 @@ function compileLiteral(value: LiteralExpression): Instruction[] {
 }
 
 function compileConcat(value: ConcatExpression): Instruction[] {
-  return [...compile(value.left), ...compile(value.right)];
+  return [...compileNode(value.left), ...compileNode(value.right)];
 }
 
 // compile a*
 function compileStar(value: StarExpression): Instruction[] {
   const start = [];
   const end = [];
-  const body = compile(value.expression);
+  const body = compileNode(value.expression);
   const bodyLength = body.length;
   const startOffset = 1 + bodyLength + 2;
   const endOffset = 1 + bodyLength + 2;
@@ -50,8 +50,8 @@ function compileStar(value: StarExpression): Instruction[] {
 function compileSelect(value: SelectExpression): Instruction[] {
   const start = [];
   const end = [];
-  const left = compile(value.left);
-  const right = compile(value.right);
+  const left = compileNode(value.left);
+  const right = compileNode(value.right);
   const leftLength = left.length;
   const rightLength = right.length;
   const startOffset = 1 + leftLength + 2;
@@ -78,17 +78,22 @@ function compileSelect(value: SelectExpression): Instruction[] {
   return [...start, ...end];
 }
 
-function compile(ast: Expression): Instruction[] {
+function compileNode(ast: Expression): Instruction[] {
   switch (ast.type) {
     case "LiteralExpression":
-      return compileLiteral(ast).concat({ code: instructionCodes.match });
+      return compileLiteral(ast);
     case "ConcatExpression":
-      return compileConcat(ast).concat({ code: instructionCodes.match });
+      return compileConcat(ast);
     case "StarExpression":
-      return compileStar(ast).concat({ code: instructionCodes.match });
+      return compileStar(ast);
     case "SelectExpression":
-      return compileSelect(ast).concat({ code: instructionCodes.match });
+      return compileSelect(ast);
   }
+}
+
+function compile(ast: Expression): Instruction[] {
+  const result = compileNode(ast).concat({ code: instructionCodes.match });
+  return result;
 }
 
 export { compile };

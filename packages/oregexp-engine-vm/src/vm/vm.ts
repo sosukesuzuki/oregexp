@@ -49,8 +49,8 @@ class VM {
 
   public run(): boolean {
     while (this.programCounter < this.instructions.length) {
-      if (!this.instruction) {
-        break;
+      if (this.instruction.code === instructionCodes.match) {
+        return true;
       }
       const result = this.runInstruction(this.instruction);
       if (!result) {
